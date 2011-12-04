@@ -11,6 +11,13 @@ int main(void)
 {
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
+  // Setup oscillator for 16MHz operation
+  BCSCTL1 = CALBC1_16MHZ;
+  DCOCTL = CALDCO_16MHZ;
+
+  // Wait for changes to take effect
+  __delay_cycles(4000);
+
   setup_cc2500(rx_callback);
 
   // Configure ports -- switch inputs, LEDs, GDO0 to RX packet info from CCxxxx
@@ -29,6 +36,7 @@ int main(void)
 // This function is called to process the received packet
 uint8_t rx_callback( uint8_t* buffer, uint8_t length )
 {
+  // Blink the LEDs after receiving a packet
 	TI_CC_LED_PxOUT ^= 0x03;
 
   return 0;

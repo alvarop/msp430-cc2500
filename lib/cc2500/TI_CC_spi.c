@@ -2036,7 +2036,7 @@ void TI_CC_SPISetup(void)
   TI_CC_CSn_PxDIR |= TI_CC_CSn_PIN;         // /CS disable
 
   USICTL0 |= USIPE7 +  USIPE6 + USIPE5 + USIMST + USIOE;// Port, SPI master
-  USICKCTL = USISSEL_2 + USICKPL;           // SCLK = SMCLK
+  USICKCTL = USIDIV2 + USISSEL_2 + USICKPL; // SCLK = SMCLK/16
   USICTL0 &= ~USISWRST;                     // USI released for operation
 
   USISRL = 0x00;                            // Ensure SDO low instead of high,
