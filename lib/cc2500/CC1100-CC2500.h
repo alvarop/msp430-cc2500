@@ -11,5 +11,5 @@
 
 
 void writeRFSettings(void);
-void RFSendPacket(char *, char);
-char RFReceivePacket(char *, char *);
+void RFSendPacket(uint8_t *, uint8_t);
+uint8_t RFReceivePacket(uint8_t *, uint8_t *);

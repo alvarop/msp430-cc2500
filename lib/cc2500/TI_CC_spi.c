@@ -31,12 +31,12 @@
 //  Configures the assigned interface to function as a SPI port and
 //  initializes it.
 //------------------------------------------------------------------------------
-//  void TI_CC_SPIWriteReg(char addr, char value)
+//  void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 //
 //  DESCRIPTION:
 //  Writes "value" to a single configuration register at address "addr".
 //------------------------------------------------------------------------------
-//  void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+//  void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 //
 //  DESCRIPTION:
 //  Writes values to multiple configuration registers, the first register being
@@ -44,26 +44,26 @@
 //  buffer are incremented sequentially (within the CCxxxx and MSP430,
 //  respectively) until "count" writes have been performed.
 //------------------------------------------------------------------------------
-//  char TI_CC_SPIReadReg(char addr)
+//  uint8_t TI_CC_SPIReadReg(uint8_t addr)
 //
 //  DESCRIPTION:
 //  Reads a single configuration register at address "addr" and returns the
 //  value read.
 //------------------------------------------------------------------------------
-//  void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+//  void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 //
 //  DESCRIPTION:
 //  Reads multiple configuration registers, the first register being at address
 //  "addr".  Values read are deposited sequentially starting at address
 //  "buffer", until "count" registers have been read.
 //------------------------------------------------------------------------------
-//  char TI_CC_SPIReadStatus(char addr)
+//  uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 //
 //  DESCRIPTION:
 //  Special read function for reading status registers.  Reads status register
 //  at register "addr" and returns the value read.
 //------------------------------------------------------------------------------
-//  void TI_CC_SPIStrobe(char strobe)
+//  void TI_CC_SPIStrobe(uint8_t strobe)
 //
 //  DESCRIPTION:
 //  Special write function for writing to command strobe registers.  Writes
@@ -74,7 +74,7 @@
 // Delay function. # of CPU cycles delayed is similar to "cycles". Specifically,
 // it's ((cycles-15) % 6) + 15.  Not exact, but gives a sense of the real-time
 // delay.  Also, if MCLK ~1MHz, "cycles" is similar to # of useconds delayed.
-void TI_CC_Wait(unsigned int cycles)
+void TI_CC_Wait(uint16_t cycles)
 {
   while(cycles>15)                          // 15 cycles consumed by overhead
     cycles = cycles - 6;                    // 6 cycles consumed each iteration
@@ -106,7 +106,7 @@ void TI_CC_SPISetup(void)
   UCTL0 &= ~SWRST;                          // Initialize USART state machine
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1&UTXIFG0));                  // Wait for TX to finish
@@ -117,9 +117,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1 & UTXIFG0));                // Wait for TX to finish
@@ -133,9 +133,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1 & UTXIFG0));                // Wait for TX to finish
@@ -149,9 +149,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1 & UTXIFG0));                // Wait for TXBUF ready
@@ -174,9 +174,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
 
 // For status/strobe addresses, the BURST bit selects between status registers
 // and command strobes.
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1 & UTXIFG0));                // Wait for TX to finish
@@ -190,7 +190,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG1 & UTXIFG0));                // Wait for TX to finish
@@ -245,7 +245,7 @@ void TI_CC_SPISetup(void)
   UCTL1 &= ~SWRST;                          // Initialize USART state machine
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TX to finish
@@ -256,9 +256,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TX to finish
@@ -272,9 +272,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TX to finish
@@ -288,9 +288,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TXBUF ready
@@ -311,9 +311,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TX to finish
@@ -327,7 +327,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UTXIFG1));                  // Wait for TX to finish
@@ -388,7 +388,7 @@ void TI_CC_SPISetup(void)
   UCA0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -399,9 +399,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -415,9 +415,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -431,9 +431,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -454,9 +454,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -470,7 +470,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -520,7 +520,7 @@ void TI_CC_SPISetup(void)
   UCA0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TXBUF ready
@@ -531,9 +531,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TXBUF ready
@@ -547,9 +547,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TX to finish
@@ -563,9 +563,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TX to finish
@@ -586,9 +586,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TX to finish
@@ -602,7 +602,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCA0TXIFG));                // Wait for TX to finish
@@ -662,7 +662,7 @@ void TI_CC_SPISetup(void)
   UCA1CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -673,9 +673,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -689,9 +689,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -705,9 +705,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -728,9 +728,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -744,7 +744,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -794,7 +794,7 @@ void TI_CC_SPISetup(void)
   UCA1CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -805,9 +805,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -821,9 +821,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -837,9 +837,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -860,9 +860,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -876,7 +876,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCA1TXIFG));              // Wait for TXBUF ready
@@ -936,7 +936,7 @@ void TI_CC_SPISetup(void)
   UCA2CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -947,9 +947,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -963,9 +963,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -979,9 +979,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1002,9 +1002,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1018,7 +1018,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1079,7 +1079,7 @@ void TI_CC_SPISetup(void)
   UCA3CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1090,9 +1090,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1106,9 +1106,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1122,9 +1122,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1145,9 +1145,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1161,7 +1161,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCA3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1224,7 +1224,7 @@ void TI_CC_SPISetup(void)
   UCB0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1235,9 +1235,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1251,9 +1251,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1267,9 +1267,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1290,9 +1290,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1306,7 +1306,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB0IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1353,7 +1353,7 @@ void TI_CC_SPISetup(void)
   UCB0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1364,9 +1364,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1380,9 +1380,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1396,9 +1396,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1419,9 +1419,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1435,7 +1435,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
@@ -1494,7 +1494,7 @@ void TI_CC_SPISetup(void)
   UCB1CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1505,9 +1505,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1521,9 +1521,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1537,9 +1537,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1560,9 +1560,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1576,7 +1576,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB1IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1625,7 +1625,7 @@ void TI_CC_SPISetup(void)
   UCB1CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1636,9 +1636,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1652,9 +1652,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1668,9 +1668,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1691,9 +1691,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1707,7 +1707,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UC1IFG&UCB1TXIFG));              // Wait for TXBUF ready
@@ -1767,7 +1767,7 @@ void TI_CC_SPISetup(void)
   UCB2CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1778,9 +1778,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1794,9 +1794,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1810,9 +1810,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1833,9 +1833,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1849,7 +1849,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB2IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1911,7 +1911,7 @@ void TI_CC_SPISetup(void)
   UCB3CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1922,9 +1922,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1938,9 +1938,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1954,9 +1954,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1977,9 +1977,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char status;
+  uint8_t status;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -1993,7 +1993,7 @@ char TI_CC_SPIReadStatus(char addr)
   return status;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (!(UCB3IFG&UCTXIFG));               // Wait for TXBUF ready
@@ -2043,7 +2043,7 @@ void TI_CC_SPISetup(void)
   USICNT = 1;                               // to avoid conflict with CCxxxx
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2056,9 +2056,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2074,9 +2074,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2091,9 +2091,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  unsigned int i;
+  uint16_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2109,9 +2109,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2126,7 +2126,7 @@ char TI_CC_SPIReadStatus(char addr)
   return x;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_USI_PxIN&TI_CC_SPI_USI_SOMI);// Wait for CCxxxx ready
@@ -2162,8 +2162,8 @@ void TI_CC_PowerupResetCCxxxx(void)
 //******************************************************************************
 #elif TI_CC_RF_SER_INTF == TI_CC_SER_INTF_BITBANG
 
-void TI_CC_SPI_bitbang_out(char);
-char TI_CC_SPI_bitbang_in();
+void TI_CC_SPI_bitbang_out(uint8_t);
+uint8_t TI_CC_SPI_bitbang_in();
 
 void TI_CC_SPISetup(void)
 {
@@ -2177,9 +2177,9 @@ void TI_CC_SPISetup(void)
 }
 
 // Output eight-bit value using selected bit-bang pins
-void TI_CC_SPI_bitbang_out(char value)
+void TI_CC_SPI_bitbang_out(uint8_t value)
 {
-  char x;
+  uint8_t x;
 
   for(x=8;x>0;x--)
   {
@@ -2196,9 +2196,9 @@ void TI_CC_SPI_bitbang_out(char value)
 }
 
 // Input eight-bit value using selected bit-bang pins
-char TI_CC_SPI_bitbang_in()
+uint8_t TI_CC_SPI_bitbang_in()
 {
-  char x=0,shift=0;
+  uint8_t x=0,shift=0;
   int y;
 
   // Determine how many bit positions SOMI is from least-significant bit
@@ -2222,7 +2222,7 @@ char TI_CC_SPI_bitbang_in()
   return(x);
 }
 
-void TI_CC_SPIWriteReg(char addr, char value)
+void TI_CC_SPIWriteReg(uint8_t addr, uint8_t value)
 {
     TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;      // /CS enable
     while (TI_CC_SPI_BITBANG_PxIN&TI_CC_SPI_BITBANG_SOMI); // Wait CCxxxx ready
@@ -2231,9 +2231,9 @@ void TI_CC_SPIWriteReg(char addr, char value)
     TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;       // /CS disable
 }
 
-void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIWriteBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-    char i;
+    uint8_t i;
 
     TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;      // /CS enable
     while (TI_CC_SPI_BITBANG_PxIN&TI_CC_SPI_BITBANG_SOMI); // Wait CCxxxx ready
@@ -2243,9 +2243,9 @@ void TI_CC_SPIWriteBurstReg(char addr, char *buffer, char count)
     TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;       // /CS disable
 }
 
-char TI_CC_SPIReadReg(char addr)
+uint8_t TI_CC_SPIReadReg(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   TI_CC_SPI_bitbang_out(addr | TI_CCxxx0_READ_SINGLE);//Send address
@@ -2255,9 +2255,9 @@ char TI_CC_SPIReadReg(char addr)
   return x;
 }
 
-void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
+void TI_CC_SPIReadBurstReg(uint8_t addr, uint8_t *buffer, uint8_t count)
 {
-  char i;
+  uint8_t i;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_BITBANG_PxIN&TI_CC_SPI_BITBANG_SOMI); // Wait CCxxxx ready
@@ -2267,9 +2267,9 @@ void TI_CC_SPIReadBurstReg(char addr, char *buffer, char count)
   TI_CC_CSn_PxOUT |= TI_CC_CSn_PIN;         // /CS disable
 }
 
-char TI_CC_SPIReadStatus(char addr)
+uint8_t TI_CC_SPIReadStatus(uint8_t addr)
 {
-  char x;
+  uint8_t x;
 
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_BITBANG_PxIN & TI_CC_SPI_BITBANG_SOMI); // Wait CCxxxx ready
@@ -2280,7 +2280,7 @@ char TI_CC_SPIReadStatus(char addr)
   return x;
 }
 
-void TI_CC_SPIStrobe(char strobe)
+void TI_CC_SPIStrobe(uint8_t strobe)
 {
   TI_CC_CSn_PxOUT &= ~TI_CC_CSn_PIN;        // /CS enable
   while (TI_CC_SPI_BITBANG_PxIN&TI_CC_SPI_BITBANG_SOMI);// Wait for CCxxxx ready
