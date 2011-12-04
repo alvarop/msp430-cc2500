@@ -96,6 +96,11 @@
 			<type>1</type>
 			<locationURI>INSTALLROOT_CC2500/projects/cc2500_test/cc2500_test.c</locationURI>
 		</link>
+		<link>
+			<name>radio_cc2500.c</name>
+			<type>1</type>
+			<locationURI>INSTALLROOT_CC2500/lib/cc2500/radio_cc2500.c</locationURI>
+		</link>
 	</linkedResources>
 	<variableList>
 		<variable>
