@@ -29,7 +29,7 @@ int main(void)
 // This function is called to process the received packet
 uint8_t rx_callback( uint8_t* buffer, uint8_t length )
 {
-	TI_CC_LED_PxOUT ^= buffer[1];
+	TI_CC_LED_PxOUT ^= 0x03;
 
   return 0;
 }

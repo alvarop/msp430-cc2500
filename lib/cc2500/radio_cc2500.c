@@ -14,9 +14,6 @@
 #define ADDRESS_FIELD (1)
 #define DATA_FIELD    (2)
 
-extern uint8_t paTable[];
-extern uint8_t paTableLen;
-
 static uint8_t dummy_callback( uint8_t*, uint8_t );
 uint8_t receive_packet( uint8_t*, uint8_t* );
 
@@ -44,7 +41,7 @@ static uint8_t (*rx_callback)( uint8_t*, uint8_t ) = dummy_callback;
  * ****************************************************************************/
 void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
 {
-  //uint8_t max_power = 0xff;
+  uint8_t initial_power = 0xFB;				// 0 dBm
 
   // Set-up rx_callback function
   rx_callback = callback;
@@ -53,7 +50,7 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
 
   TI_CC_PowerupResetCCxxxx();               // Reset CCxxxx
   writeRFSettings();                        // Write RF settings to config reg
-  TI_CC_SPIWriteBurstReg(TI_CCxxx0_PATABLE, paTable, paTableLen);//Write PATABLE
+  TI_CC_SPIWriteBurstReg( TI_CCxxx0_PATABLE, &initial_power, 1);//Write PATABLE
  
   TI_CC_SPIStrobe(TI_CCxxx0_SRX);           // Initialize CCxxxx in RX mode.
                                             // When a pkt is received, it will
@@ -262,5 +259,5 @@ __interrupt void port2_isr(void) // CHANGE
   
   // Only needed if radio is configured to return to IDLE after transmission
   // Check register MCSM1.TXOFF_MODE
-  //strobe( SRX ); // enter receive mode again
+  // TI_CC_SPIStrobe(TI_CCxxx0_SRX); // enter receive mode again
 }

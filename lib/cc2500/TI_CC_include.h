@@ -16,6 +16,7 @@
 // Comments: Initial Release Version
 //******************************************************************************
 #include <stdint.h>
+
 #include "TI_CC_CC1100-CC2500.h"
 #include "TI_CC_spi.h"
 #include "CC1100-CC2500.h"
