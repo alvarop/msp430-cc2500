@@ -42,8 +42,7 @@ uint8_t rx_callback( uint8_t* buffer, uint8_t length )
   return 0;
 }
 
-// The ISR assumes the interrupt came from a press of one of the four buttons
-// and therefore does not check the other four inputs.
+// Port 1 ISR
 #pragma vector=PORT1_VECTOR
 __interrupt void port1_ISR (void)
 {
