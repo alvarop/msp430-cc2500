@@ -3,12 +3,18 @@
 #include <stdint.h>
 #include "radio_cc2500.h"
 
-uint8_t txBuffer[4];
+uint8_t txBuffer[6];
+static uint8_t rgb[3] = {128, 128, 128};
 
 uint8_t rx_callback( uint8_t*, uint8_t );
 
 int main(void)
 {
+  int8_t r, g ,b;
+  r = 2;
+  g = -3;
+  b = 1;
+
   WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
   // Setup oscillator for 16MHz operation
@@ -29,7 +35,62 @@ int main(void)
   TI_CC_LED_PxDIR = TI_CC_LED1 + TI_CC_LED2; //Outputs
 
 
-  __bis_SR_register(LPM3_bits + GIE);       // Enter LPM3, enable interrupts
+  __bis_SR_register(GIE);       // Enter LPM3, enable interrupts
+
+  // Fade through colors
+  for(;;)
+  {
+
+    if( (rgb[0] > 250) & (r > 0) )
+    {
+      r = -r;
+    }
+    if( (rgb[0] < 5) & (r < 0) )
+    {
+      r = -r;
+    }
+
+    if( (rgb[1] > 250) & (g > 0) )
+    {
+      g = -g;
+    }
+    if( (rgb[1] < 5) & (g < 0) )
+    {
+      g = -g;
+    }
+
+    if( (rgb[2] > 250) & (b > 0) )
+    {
+      b = -b;
+    }
+    if( (rgb[2] < 5) & (b < 0) )
+    {
+      b = -b;
+    }
+
+    rgb[0] += r;
+    rgb[1] += g;
+    rgb[2] += b;
+
+    //Build packet
+    txBuffer[0] = 4;                           // Packet length
+    txBuffer[1] = 0x01;                        // Packet address
+    txBuffer[2] = rgb[0];       // red
+    txBuffer[3] = rgb[1];       // green
+    txBuffer[4] = rgb[2];       // blue
+
+    __delay_cycles(100000);
+    __delay_cycles(100000);
+    __delay_cycles(100000);
+    __delay_cycles(100000);
+    __delay_cycles(100000);
+
+    // Send message to LED controller!
+    cc2500_tx(txBuffer, 5);
+
+    // Toggle local LED to signal transmission
+    TI_CC_LED_PxOUT ^= 0x03;
+  }
 
 }
 
@@ -49,11 +110,13 @@ __interrupt void port1_ISR (void)
   if(P1IFG & (TI_CC_SW1))
   {
     // Build packet
-    txBuffer[0] = 2;                           // Packet length
+    txBuffer[0] = 4;                           // Packet length
     txBuffer[1] = 0x01;                        // Packet address
-    txBuffer[2] = (~TI_CC_SW_PxIN) & 0x0F;     // Load four switch inputs
+    txBuffer[2] = rgb[0];       // red
+    txBuffer[3] = rgb[1];       // green
+    txBuffer[4] = rgb[2];       // blue
 
-    cc2500_tx(txBuffer, 3);                 // Send value over RF
+    cc2500_tx(txBuffer, 5);                 // Send value over RF
   }
 
   TI_CC_SW_PxIFG &= ~(TI_CC_SW1); // Clr flag that caused int
