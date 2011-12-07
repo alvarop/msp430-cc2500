@@ -1213,7 +1213,7 @@ void TI_CC_SPISetup(void)
   UCB0CTL1 |= UCSWRST;                      // **Disable USCI state machine**
   UCB0CTL0 |= UCMST+UCCKPH+UCMSB+UCSYNC;    // 3-pin, 8-bit SPI master
   UCB0CTL1 |= UCSSEL_2;                     // SMCLK
-  UCB0BR0 = 0x02;                           // UCLK/2
+  UCB0BR0 = 0x010;                           // UCLK/16
   UCB0BR1 = 0;
   TI_CC_SPI_USCIB0_PxSEL |= TI_CC_SPI_USCIB0_SIMO
                          | TI_CC_SPI_USCIB0_SOMI
