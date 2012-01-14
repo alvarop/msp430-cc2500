@@ -14,7 +14,7 @@
 #define TI_CC_LED_PxOUT         P1OUT
 #define TI_CC_LED_PxDIR         P1DIR
 #define TI_CC_LED1              0x01
-#define TI_CC_LED2              0x02
+//#define TI_CC_LED2              0x02
 
 #define TI_CC_SW_PxIN           P1IN
 #define TI_CC_SW_PxIE           P1IE
@@ -50,4 +50,12 @@
 //----------------------------------------------------------------------------
 // Select which port will be used for interface to CCxxxx
 //----------------------------------------------------------------------------
+#if defined( __MSP430G2452__)
 #define TI_CC_RF_SER_INTF       TI_CC_SER_INTF_USI  // Interface to CCxxxx
+#elif defined( __MSP430G2533__)
+#define TI_CC_RF_SER_INTF       TI_CC_SER_INTF_USCIB0  // Interface to CCxxxx
+#else
+#error unsupported device! (Write some code to fix support it!)
+#endif
+
+

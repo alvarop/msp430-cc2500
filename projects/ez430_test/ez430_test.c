@@ -1,4 +1,4 @@
-/** @file radio_cc2500.c
+/** @file ez430_test.c
 *
 * @brief Get RGB data via 19200 baud serial connection and send out via radio
 *

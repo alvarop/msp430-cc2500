@@ -24,7 +24,7 @@
 #include "TI_CC_msp430.h"
 
 // Determine which hardware header to add depending on the device
-#if defined( __MSP430G2452__)
+#if defined( __MSP430G2452__) || defined( __MSP430G2533__)
 #include "TI_CC_hardware_board.h"
 #elif defined(__MSP430F2274__)
 #include "TI_CC_hardware_board_eZ430.h"

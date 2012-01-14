@@ -31,8 +31,8 @@ int main(void)
   TI_CC_SW_PxIFG &= ~(TI_CC_SW1);//Clr flags
   TI_CC_SW_PxIE = TI_CC_SW1;//Activate enables
 
-  TI_CC_LED_PxOUT &= ~(TI_CC_LED1 + TI_CC_LED2); //Outputs
-  TI_CC_LED_PxDIR = TI_CC_LED1 + TI_CC_LED2; //Outputs
+  TI_CC_LED_PxOUT &= ~(TI_CC_LED1); //Outputs
+  TI_CC_LED_PxDIR = TI_CC_LED1; //Outputs
 
 
   __bis_SR_register(GIE);       // Enter LPM3, enable interrupts
