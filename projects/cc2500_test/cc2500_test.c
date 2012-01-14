@@ -1,7 +1,7 @@
 #include <msp430.h>
-#include "TI_CC_include.h"
+#include "cc2500/TI_CC_include.h"
 #include <stdint.h>
-#include "radio_cc2500.h"
+#include "cc2500/radio_cc2500.h"
 
 uint8_t txBuffer[6];
 static uint8_t rgb[3] = {128, 128, 128};

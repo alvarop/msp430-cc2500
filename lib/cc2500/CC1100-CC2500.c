@@ -11,8 +11,8 @@
 //------------------------------------------------------------------------------
 
 
-#include "TI_CC_include.h"
-#include "TI_CC_CC1100-CC2500.h"
+#include "cc2500/TI_CC_include.h"
+#include "cc2500/TI_CC_CC1100-CC2500.h"
 
 #define TI_CC_RF_FREQ  2400                 // 315, 433, 868, 915, 2400
 

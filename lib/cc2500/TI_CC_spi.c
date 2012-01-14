@@ -21,8 +21,8 @@
 // Comments: Initial Release Version
 //------------------------------------------------------------------------------
 
-#include "TI_CC_include.h"
-#include "TI_CC_spi.h"
+#include "cc2500/TI_CC_include.h"
+#include "cc2500/TI_CC_spi.h"
 
 //------------------------------------------------------------------------------
 //  void TI_CC_SPISetup(void)

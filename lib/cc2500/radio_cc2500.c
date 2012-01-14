@@ -4,8 +4,8 @@
 *
 * @author Alvaro Prieto
 */
-#include "radio_cc2500.h"
-#include "TI_CC_include.h"
+#include "cc2500/radio_cc2500.h"
+#include "cc2500/TI_CC_include.h"
 #include <signal.h>
 #include <string.h>
 
