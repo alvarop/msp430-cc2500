@@ -1,0 +1,35 @@
+msp430-cc2500 Project README
+by Alvaro Prieto (blog.alvarop.com)
+
+--Overview--
+The goal of the code here is to interface with TI's cc2500 radio chip. Currently, I'm using MSP430's to talk to the radio. In the future, I hope to make it easy to port the library to other platforms like AVR and ARM devices.
+I'm working on this library as a hobby, so there might be long periods of time without any updates. Feel free to contribute if you find a bug or want to add a feature!
+
+--Directory Structure and Relevant Files--
+Note: This is what I'm aiming for. It's not quite there yet, and might change.
+I'm not listing all of the files, just some examples so you get the idea.
+
+msp430-cc2500/            -- Root directory
+--lib/
+ |--cc2500/               -- Contains cc2500 radio drivers ^
+ |--device/               -- Contains all device specific header files
+   |--ti/                 -- Contains all of TI device headers
+     |--msp430            -- Contains all msp430 family header files.
+       |--g2533.h         -- This file contains specific hardware definitions for the msp430g2533
+ |--spi/                  -- Contains spi functions for specific peripherals
+   |--ti/                 -- Contains all of TI device headers
+     |--uscib0.c          -- Contains the radio/spi drivers for devices with a uscib0 peripheral
+     |--usi.c             -- Contains the radio/spi drivers for devices with a usi peripheral
+ |--uart/                 -- Contains uart functions for specific peripherals
+ |--device.h              -- This file decides which specific device header file to include from the device directory.
+ |--spi.h                 -- This file is what needs to be included to use spi, regardless of the peripheral used
+
+--projects/
+ |--rgb_controller/       -- Contains the files for the rgb_controller project
+   |--ccs/                -- Contains the CCSv5 project files
+   |--rgb_controller.c    -- Main file for rgb_controller project
+
+^ Much of the radio interface code was derived from TI's slaa325a document. (MSP430 Interfaceto CC1100/2500 Code Library)
+
+--Other Stuff--
+I'm blogging as I work on this, so you might find some better information there: http://blog.alvarop.com
