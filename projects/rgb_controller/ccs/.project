@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ez430_test</name>
+	<name>rgb_controller</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -30,7 +30,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${workspace_loc:/ez430_test/Debug}</value>
+					<value>${workspace_loc:/rgb_controller/Debug}</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
@@ -82,24 +82,24 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>CC1100-CC2500.c</name>
+			<name>cc2500.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/CC1100-CC2500.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/cc2500.c</locationURI>
 		</link>
 		<link>
-			<name>TI_CC_spi.c</name>
+			<name>rgb_controller.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/TI_CC_spi.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/rgb_controller.c</locationURI>
 		</link>
 		<link>
-			<name>ez430_test.c</name>
+			<name>uscia0.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/ez430_test.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/uart/ti/uscia0.c</locationURI>
 		</link>
 		<link>
-			<name>radio_cc2500.c</name>
+			<name>uscib0.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/radio_cc2500.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/spi/ti/uscib0.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,16 +1,23 @@
-//----------------------------------------------------------------------------
-//  Description:  This file contains definitions specific to the CC1100/2500.
-//  The configuration registers, strobe commands, and status registers are 
-//  defined, as well as some common masks for these registers.
-//
-//  MSP430/CC1100-2500 Interface Code Library v1.0
-//
-//  K. Quiring
-//  Texas Instruments, Inc.
-//  July 2006
-//  IAR Embedded Workbench v3.41
-//----------------------------------------------------------------------------
+/** @file spi.h
+*
+* @brief SPI functions
+*
+* @author Alvaro Prieto
+*/
+#ifndef _SPI_H
+#define _SPI_H
 
+#include <stdint.h>
+
+void wait_cycles(uint16_t);
+void spi_setup(void);
+void cc_write_reg(uint8_t, uint8_t);
+void cc_write_burst_reg(uint8_t, uint8_t*, uint8_t);
+uint8_t cc_read_reg(uint8_t);
+void cc_read_burst_reg(uint8_t, uint8_t *, uint8_t);
+uint8_t cc_read_status(uint8_t);
+void cc_strobe(uint8_t);
+void cc_powerup_reset(void);
 
 // Configuration Registers
 #define TI_CCxxx0_IOCFG2       0x00        // GDO2 output pin configuration
@@ -106,4 +113,4 @@
 #define TI_CCxxx0_READ_SINGLE  0x80
 #define TI_CCxxx0_READ_BURST   0xC0
 
-
+#endif /* _SPI_H */

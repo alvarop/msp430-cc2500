@@ -82,14 +82,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>CC1100-CC2500.c</name>
+			<name>cc2500.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/CC1100-CC2500.c</locationURI>
-		</link>
-		<link>
-			<name>TI_CC_spi.c</name>
-			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/TI_CC_spi.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/cc2500.c</locationURI>
 		</link>
 		<link>
 			<name>cc2500_test.c</name>
@@ -97,9 +92,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/cc2500_test.c</locationURI>
 		</link>
 		<link>
-			<name>radio_cc2500.c</name>
+			<name>usi.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/cc2500/radio_cc2500.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/spi/ti/usi.c</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>

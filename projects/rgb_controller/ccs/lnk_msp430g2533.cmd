@@ -1,5 +1,5 @@
 /******************************************************************************/
-/* lnk_msp430f2274.cmd - LINKER COMMAND FILE FOR LINKING MSP430F2274 PROGRAMS     */
+/* lnk_msp430g2533.cmd - LINKER COMMAND FILE FOR LINKING MSP430G2533 PROGRAMS     */
 /*                                                                            */
 /*   Usage:  lnk430 <obj files...>    -o <out file> -m <map file> lnk.cmd     */
 /*           cl430  <src files...> -z -o <out file> -m <map file> lnk.cmd     */
@@ -23,12 +23,12 @@ MEMORY
     SFR                     : origin = 0x0000, length = 0x0010
     PERIPHERALS_8BIT        : origin = 0x0010, length = 0x00F0
     PERIPHERALS_16BIT       : origin = 0x0100, length = 0x0100
-    RAM                     : origin = 0x0200, length = 0x0400
+    RAM                     : origin = 0x0200, length = 0x0200
     INFOA                   : origin = 0x10C0, length = 0x0040
     INFOB                   : origin = 0x1080, length = 0x0040
     INFOC                   : origin = 0x1040, length = 0x0040
     INFOD                   : origin = 0x1000, length = 0x0040
-    FLASH                   : origin = 0x8000, length = 0x7FDE
+    FLASH                   : origin = 0xC000, length = 0x3FE0
     INT00                   : origin = 0xFFE0, length = 0x0002
     INT01                   : origin = 0xFFE2, length = 0x0002
     INT02                   : origin = 0xFFE4, length = 0x0002
@@ -91,5 +91,5 @@ SECTIONS
 /* INCLUDE PERIPHERALS MEMORY MAP                                           */
 /****************************************************************************/
 
--l msp430f2274.cmd
+-l msp430g2533.cmd
 

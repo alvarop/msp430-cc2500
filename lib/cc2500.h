@@ -1,12 +1,12 @@
-/** @file radio_cc2500.h
+/** @file cc2500.h
 *
 * @brief cc2500 radio functions
 *
 * @author Alvaro Prieto
 *     derived from SLAA465 examples
 */
-#ifndef _RADIO_CC2500_H
-#define _RADIO_CC2500_H
+#ifndef _CC2500_H
+#define _CC2500_H
 
 #include <stdint.h>
 
@@ -24,4 +24,6 @@ void cc2500_set_power( uint8_t );
 void cc2500_enable_addressing();
 void cc2500_disable_addressing();
 
-#endif /* _RADIO_CC2500_H */
+void writeRFSettings(void);
+
+#endif /* _CC2500_H */

@@ -1,7 +1,12 @@
-#include <msp430.h>
-#include "cc2500/TI_CC_include.h"
+/** @file cc2500_test.c
+*
+* @brief Fade between RGB colors and send out via radio
+*
+* @author Alvaro Prieto
+*/
 #include <stdint.h>
-#include "cc2500/radio_cc2500.h"
+#include "device.h"
+#include "cc2500.h"
 
 uint8_t txBuffer[6];
 static uint8_t rgb[3] = {128, 128, 128};
@@ -26,14 +31,8 @@ int main(void)
 
   setup_cc2500(rx_callback);
 
-  // Configure ports -- switch inputs, LEDs, GDO0 to RX packet info from CCxxxx
-  TI_CC_SW_PxIES = TI_CC_SW1;//Int on falling edge
-  TI_CC_SW_PxIFG &= ~(TI_CC_SW1);//Clr flags
-  TI_CC_SW_PxIE = TI_CC_SW1;//Activate enables
-
-  TI_CC_LED_PxOUT &= ~(TI_CC_LED1); //Outputs
-  TI_CC_LED_PxDIR = TI_CC_LED1; //Outputs
-
+  LED_PxOUT &= ~(LED1); //Outputs
+  LED_PxDIR = LED1; //Outputs
 
   __bis_SR_register(GIE);       // Enter LPM3, enable interrupts
 
@@ -89,7 +88,7 @@ int main(void)
     cc2500_tx(txBuffer, 5);
 
     // Toggle local LED to signal transmission
-    TI_CC_LED_PxOUT ^= 0x03;
+    LED_PxOUT ^= 0x03;
   }
 
 }
@@ -98,27 +97,8 @@ int main(void)
 uint8_t rx_callback( uint8_t* buffer, uint8_t length )
 {
   // Blink the LEDs after receiving a packet
-	TI_CC_LED_PxOUT ^= 0x03;
+	LED_PxOUT ^= 0x03;
 
   return 0;
 }
 
-// Port 1 ISR
-#pragma vector=PORT1_VECTOR
-__interrupt void port1_ISR (void)
-{
-  if(P1IFG & (TI_CC_SW1))
-  {
-    // Build packet
-    txBuffer[0] = 4;                           // Packet length
-    txBuffer[1] = 0x01;                        // Packet address
-    txBuffer[2] = rgb[0];       // red
-    txBuffer[3] = rgb[1];       // green
-    txBuffer[4] = rgb[2];       // blue
-
-    cc2500_tx(txBuffer, 5);                 // Send value over RF
-  }
-
-  TI_CC_SW_PxIFG &= ~(TI_CC_SW1); // Clr flag that caused int
-
-}

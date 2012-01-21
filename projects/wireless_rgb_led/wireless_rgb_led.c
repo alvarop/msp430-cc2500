@@ -1,7 +1,12 @@
-#include <msp430.h>
-#include "TI_CC_include.h"
+/** @file wireless_rgb_led.c
+*
+* @brief Receive RGB colors from radio and use soft PWM to display them
+*
+* @author Alvaro Prieto
+*/
 #include <stdint.h>
-#include "radio_cc2500.h"
+#include "device.h"
+#include "cc2500.h"
 
 uint8_t rx_callback( uint8_t*, uint8_t );
 
@@ -20,8 +25,8 @@ int main(void)
 
   setup_cc2500(rx_callback);
 
-  TI_CC_LED_PxOUT &= ~(TI_CC_LED1 + TI_CC_LED2); //Outputs
-  TI_CC_LED_PxDIR = TI_CC_LED1 + TI_CC_LED2; //Outputs
+  LED_PxOUT &= ~(LED1 + LED2); //Outputs
+  LED_PxDIR = LED1 + LED2; //Outputs
 
   // Configure ports -- switch inputs, LEDs, GDO0 to RX packet info from CCxxxx
    P2OUT |= (BIT0 | BIT1 | BIT2);

@@ -1,17 +1,18 @@
-/** @file uart.c
+/** @file uscia0.c
 *
-* @brief UART functions
+* @brief UART functions using USCI A0 Peripheral
 *
 * @author Alvaro Prieto
 */
 #include "uart.h"
+#include "device.h"
 
 static uint8_t dummy_callback( uint8_t );
 
 static uint8_t (*uart_rx_callback)( uint8_t ) = dummy_callback;
 
-#if !defined(__MSP430G2533__)
-#error This serial library was written for device MSP430G2533
+#if !defined(UART_INTERFACE_USCIA0)
+#error This serial library was written for device with USCI A0
 #endif
 
 /*******************************************************************************
@@ -167,32 +168,5 @@ __interrupt void uart_tx_isr(void) // CHANGE
       // Disable TX interrupts on SPI
       //IE2 &= ~UCB0TXIE;
   }
-}
-
-
-/*******************************************************************************
- * @fn     uint8_t hex_to_string( uint8_t* buffer_out, uint8_t* buffer_in, 
- *                                          uint8_t buffer_in_size  )
- * @brief  DEBUG function used to convert hex values to [hex]string format
- * ****************************************************************************/
-uint8_t hex_to_string( uint8_t* buffer_out, uint8_t* buffer_in, 
-                                    uint8_t buffer_in_size  )
-{
-  static const uint8_t hex_char[16] = { '0', '1', '2', '3', '4', '5', '6', '7', 
-                                      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-  uint8_t counter = 0;
-  
-  while( counter < buffer_in_size * 2 )
-  {
-    buffer_out[counter] = hex_char[((buffer_in[(counter>>1)]>>4) & 0xF)];
-    counter++;
-    buffer_out[counter] = hex_char[(buffer_in[(counter>>1)] & 0xF)];
-    counter++;
-  }
-  
-  // Terminate string with null character
-  buffer_out[counter++] = 0;
-  
-  return counter;
 }
 
