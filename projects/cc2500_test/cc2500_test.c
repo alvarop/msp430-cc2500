@@ -40,6 +40,7 @@ int main(void)
   for(;;)
   {
 
+    // Bounce back and forth between 0 and 255
     if( (rgb[0] > 250) & (r > 0) )
     {
       r = -r;
@@ -67,13 +68,14 @@ int main(void)
       b = -b;
     }
 
+    // Update current colors
     rgb[0] += r;
     rgb[1] += g;
     rgb[2] += b;
 
     //Build packet
-    txBuffer[0] = 4;                           // Packet length
-    txBuffer[1] = 0x01;                        // Packet address
+    txBuffer[0] = 4;            // Packet length
+    txBuffer[1] = 0x01;         // Packet address
     txBuffer[2] = rgb[0];       // red
     txBuffer[3] = rgb[1];       // green
     txBuffer[4] = rgb[2];       // blue

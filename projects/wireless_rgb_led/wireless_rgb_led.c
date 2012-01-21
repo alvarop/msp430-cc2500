@@ -23,19 +23,16 @@ int main(void)
   // Wait for changes to take effect
   __delay_cycles(4000);
 
+  // Initialize cc2500 and register callback function to process incoming data
   setup_cc2500(rx_callback);
 
   LED_PxOUT &= ~(LED1 + LED2); //Outputs
   LED_PxDIR = LED1 + LED2; //Outputs
 
-  // Configure ports -- switch inputs, LEDs, GDO0 to RX packet info from CCxxxx
-   P2OUT |= (BIT0 | BIT1 | BIT2);
-   P2DIR |= BIT0 | BIT1 | BIT2;
-
-   // Setup timer A
-   // SMCLK, up mode, enable interrupt
-   TA0CTL = TASSEL_2 + MC_1 + TAIE + TACLR;
-   TA0CCR0 = 512; // 512/16MHz = ~32us
+  // Setup timer A
+  // SMCLK, up mode, enable interrupt
+  TA0CTL = TASSEL_2 + MC_1 + TAIE + TACLR;
+  TA0CCR0 = 512; // 512/16MHz = ~32us
 
   __bis_SR_register(LPM1_bits + GIE);       // Enter LPM3, enable interrupts
 
