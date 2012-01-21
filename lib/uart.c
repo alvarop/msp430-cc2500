@@ -34,9 +34,9 @@ void setup_uart( void )
   //UCA0BR1 = 0x04;                     // 1250 = 0x4e2
   //UCA0MCTL = UCBRS_0+UCBRF_0;         // Modulation UCBRSx=0, UCBRFx=0
 
-  UCA0BR0 = 104;                      // 12MHz/115200=104.167 (see User's Guide)
+  UCA0BR0 = 138;                      // 16MHz/115200=138 (see User's Guide)
   UCA0BR1 = 0x00;                     //
-  UCA0MCTL = UCBRS_1+UCBRF_0;         // Modulation UCBRSx=3, UCBRFx=0
+  UCA0MCTL = UCBRS_7+UCBRF_0;         // Modulation UCBRSx=3, UCBRFx=0
   UCA0CTL1 &= ~UCSWRST;               // **Initialize USCI state machine**
 
   IE2 |= UCA0RXIE;                    // Enable USCI_A0/B0 RX interrupt

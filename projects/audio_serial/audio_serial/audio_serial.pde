@@ -22,7 +22,7 @@ void setup()
   println(Serial.list());
   
   // Need to change this as needed
-  myPort = new Serial(this, Serial.list()[1], 19200);
+  myPort = new Serial(this, Serial.list()[1], 115200);
  
   // specify 512 for the length of the sample buffers
   // the default buffer size is 1024
@@ -55,37 +55,68 @@ void draw()
   // so that we can see the lines better
   
   int low = 0;
+  int mid = 0;
   int high = 0;
+  int threshold = 15;
   for(int i = 0; i < fft.specSize(); i++)
   {
     line(i, height, i, height - fft.getBand(i)*4);
     
     // Add up all values in bins 5-25, take the log just for fun
-    if( (i > 4) && (i < 26) )
+    if( (i > 2) && (i < 15) )
     {
        low = low + round(log(fft.getBand(i)*10+1));
     }
     
+    if( (i > 16) && (i < 30) )
+    {
+       mid = mid + round(log(fft.getBand(i)*10+1));
+    }
+    
     // Add up all values in bins 26-50, take the log just for fun
-    if( (i > 25) && (i < 51) )
+    if( (i > 31) && (i < 45) )
     {
        high = high + round(log(fft.getBand(i)*10+1));
     }
   }
  
+   low -= threshold;
+   mid -= threshold;
+   high -= threshold;
+ 
   // Saturate output, only 255 brightnesses available
   if(low > 255)
   {
     low= 255;
-  }  
+  }
+  if(mid > 255)
+  {
+    mid= 255;
+  }
   if(high > 255)
   {
     high= 255;
+  }    
+  
+  // Saturate output low
+  if(low < 0)
+  {
+    low= 0;
   }
+  if(mid < 0)
+  {
+    mid= 0;
+  }  
+  if(high < 0)
+  {
+    high= 0;
+  }
+  
+
       
   // Write RGB values to serial port.
   myPort.write(low); // Red is for the low channel
-  myPort.write(0); // Green is currently broken on RGB strip, so not used
+  myPort.write(mid); // Green is for the middle
   myPort.write(high); // Blue is for the higher stuff
  
   // Print values for debugging 
