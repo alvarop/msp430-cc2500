@@ -45,7 +45,7 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
 
   // Set-up rx_callback function
   rx_callback = callback;
-  
+
   TI_CC_SPISetup();                         // Initialize SPI port
 
   TI_CC_PowerupResetCCxxxx();               // Reset CCxxxx
@@ -55,7 +55,7 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
   TI_CC_SPIStrobe(TI_CCxxx0_SRX);           // Initialize CCxxxx in RX mode.
                                             // When a pkt is received, it will
                                             // signal on GDO0 and wake CPU  
-                                            
+
   // Configure GDO0 port                                        
   TI_CC_GDO0_PxIES |= TI_CC_GDO0_PIN;       // Int on falling edge (end of pkt)
   TI_CC_GDO0_PxIFG &= ~TI_CC_GDO0_PIN;      // Clear flag
