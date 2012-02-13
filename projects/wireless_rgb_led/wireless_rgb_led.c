@@ -29,6 +29,10 @@ int main(void)
   LED_PxOUT &= ~(LED1 + LED2); //Outputs
   LED_PxDIR = LED1 + LED2; //Outputs
 
+  // Configure ports -- switch inputs, LEDs, GDO0 to RX packet info from CCxxxx
+   P2OUT |= (BIT0 | BIT1 | BIT2);
+   P2DIR |= BIT0 | BIT1 | BIT2;
+
   // Setup timer A
   // SMCLK, up mode, enable interrupt
   TA0CTL = TASSEL_2 + MC_1 + TAIE + TACLR;
