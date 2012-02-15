@@ -10,6 +10,9 @@
 #if defined( __MSP430G2452__)
 #include "device/ti/msp430/g2452.h"
 
+#elif defined( __MSP430G2412__)
+#include "device/ti/msp430/g2412.h"
+
 #elif defined( __MSP430G2533__)
 #include "device/ti/msp430/g2533.h"
 
