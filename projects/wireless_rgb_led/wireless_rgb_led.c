@@ -50,6 +50,8 @@ uint8_t rx_callback( uint8_t* buffer, uint8_t length )
   rgb[1] = buffer[2]; // Copy green
   rgb[2] = buffer[3]; // Copy blue
 
+  LED_PxOUT ^= 0x01; // Toggle LED on message received
+
   // Don't wake up the processor
   return 0;
 }
