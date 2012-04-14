@@ -1,2 +1,8 @@
-Debug/
 *.prefs
+*.obj
+*.pp
+*.map
+*.out
+makefile
+*.mk
+*.opt

@@ -27,7 +27,7 @@ void spi_setup(void)
   CSn_PxDIR |= CSn_PIN;         // /CS disable
 
   UCB0CTL1 |= UCSWRST;                      // **Disable USCI state machine**
-  UCB0CTL0 |= UCMST+UCCKPL+UCMSB+UCSYNC+UCCKPH;    // 3-pin, 8-bit SPI master
+  UCB0CTL0 |= UCMST+UCCKPL+UCMSB+UCSYNC;    // 3-pin, 8-bit SPI master
   UCB0CTL1 |= UCSSEL_2;                     // SMCLK
   UCB0BR0 = 0x10;                           // UCLK/2
   UCB0BR1 = 0;
@@ -94,8 +94,8 @@ uint8_t cc_read_reg(uint8_t addr)
   while (!(IFG2&UCB0TXIFG));                // Wait for TXBUF ready
   UCB0TXBUF = 0;                            // Dummy write so we can read data
   while (UCB0STAT & UCBUSY);                // Wait for TX to complete
-  x = UCB0RXBUF;                            // Read data
   CSn_PxOUT |= CSn_PIN;         // /CS disable
+  x = UCB0RXBUF;                            // Read data
 
   return x;
 }
@@ -178,5 +178,6 @@ void cc_powerup_reset(void)
   UCB0TXBUF = TI_CCxxx0_SRES;               // Send strobe
   // Strobe addr is now being TX'ed
   while (UCB0STAT & UCBUSY);                // Wait for TX to complete
+  while(SPI_USCIB0_PxIN & SPI_USCIB0_SOMI); // Wait until the device has reset
   CSn_PxOUT |= CSn_PIN;         // /CS disable
 }

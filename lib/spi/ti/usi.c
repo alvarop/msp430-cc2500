@@ -166,10 +166,11 @@ void cc_powerup_reset(void)
   wait_cycles(45);
 
   CSn_PxOUT &= ~CSn_PIN;
-  while (SPI_USI_PxIN&SPI_USI_SOMI);
-  USISRL = TI_CCxxx0_SRES;
+  while (SPI_USI_PxIN&SPI_USI_SOMI);  // Wait for TXBUF ready
+  USISRL = TI_CCxxx0_SRES;            // Send strobe
   USICNT = 8;
-  while (!(USICTL1&USIIFG));
-  while (SPI_USI_PxIN&SPI_USI_SOMI);
+  // Strobe addr is now being TX'ed
+  while (!(USICTL1&USIIFG));          // Wait for TX to complete
+  while (SPI_USI_PxIN&SPI_USI_SOMI);  // Wait until the device has reset
   CSn_PxOUT |= CSn_PIN;
 }
