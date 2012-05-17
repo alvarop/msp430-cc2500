@@ -8,7 +8,8 @@
 uint8_t rx_callback( uint8_t*, uint8_t );
 void delay_ms(uint32_t);
 
-int16_t rssi_threshold = -50;
+int16_t rssi_threshold = -135;
+int16_t rssi_rx = -135;
 
 inline void buzzer_on() {
   P1OUT |= BIT3;
@@ -65,10 +66,17 @@ void main(void) {
 
   for(;;) {
 
-    delay_ms(800);
+    // Compute delay from incoming rssi
+    int16_t delay = (rssi_rx-rssi_threshold) * 5;
+
+
+    delay_ms(delay);
     buzzer_off();
 
-    __bis_SR_register(LPM1_bits +GIE);       // Enter LPM1, enable interrupts
+    // Reset to no delay
+    rssi_rx = rssi_threshold;
+
+    __bis_SR_register(LPM1_bits + GIE);       // Enter LPM1, enable interrupts
   }
 }
 
@@ -79,7 +87,7 @@ uint8_t rx_callback( uint8_t* buffer, uint8_t length )
 
   if(rssi_to_dbm(buffer[length]) > rssi_threshold)
   {
-
+    rssi_rx = rssi_to_dbm(buffer[length]);
     buzzer_on();
     return 1; //wake up
   }
