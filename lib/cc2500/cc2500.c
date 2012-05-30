@@ -1,6 +1,6 @@
 /** @file cc2500.c
 *
-* @brief CC2500 radio functions
+* @brief CC2500 radio functions 
 *
 * @author Alvaro Prieto
 */
@@ -27,12 +27,12 @@ static uint8_t (*rx_callback)( uint8_t*, uint8_t ) = dummy_callback;
 //
 // Optimum PATABLE levels according to Table 31 on CC2500 datasheet
 //
-/*static const uint8_t power_table[] = { 
+/*static const uint8_t power_table[] = {
                               0x00, 0x50, 0x44, 0xC0, // -55, -30, -28, -26 dBm
                               0x84, 0x81, 0x46, 0x93, // -24, -22, -20, -18 dBm
                               0x55, 0x8D, 0xC6, 0x97, // -16, -14, -12, -10 dBm
                               0x6E, 0x7F, 0xA9, 0xBB, // -8,  -6,  -4,  -2  dBm
-                              0xFE, 0xFF };           //  0,   1            dBm 
+                              0xFE, 0xFF };           //  0,   1            dBm
 */
 
 /*******************************************************************************
@@ -54,12 +54,12 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
 
   writeRFSettings();                        // Write RF settings to config reg
   cc_write_burst_reg( TI_CCxxx0_PATABLE, &initial_power, 1);//Write PATABLE
- 
+
   cc_strobe(TI_CCxxx0_SRX);           // Initialize CCxxxx in RX mode.
                                             // When a pkt is received, it will
-                                            // signal on GDO0 and wake CPU  
+                                            // signal on GDO0 and wake CPU
 
-  // Configure GDO0 port                                        
+  // Configure GDO0 port
   GDO0_PxIES |= GDO0_PIN;       // Int on falling edge (end of pkt)
   GDO0_PxIFG &= ~GDO0_PIN;      // Clear flag
   GDO0_PxIE |= GDO0_PIN;        // Enable int on end of packet
@@ -71,9 +71,9 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
  * @brief  Send raw message through radio
  * ****************************************************************************/
 void cc2500_tx( uint8_t* p_buffer, uint8_t length )
-{ 
+{
   GDO0_PxIE &= ~GDO0_PIN;          // Disable interrupt
-  
+
   cc_write_burst_reg(TI_CCxxx0_TXFIFO, p_buffer, length); // Write TX data
   cc_strobe(TI_CCxxx0_STX);           // Change state to TX, initiating
                                             // data transfer
@@ -84,28 +84,28 @@ void cc2500_tx( uint8_t* p_buffer, uint8_t length )
                                             // Wait GDO0 to clear -> end of pkt
   GDO0_PxIFG &= ~GDO0_PIN;      // After pkt TX, this flag is set.
                                             // Has to be cleared before existing
-  
+
   GDO0_PxIFG &= ~GDO0_PIN;          // Clear flag
   GDO0_PxIE |= GDO0_PIN;            // Enable interrupt
 }
 
 /*******************************************************************************
- * @fn     void cc2500_tx_packet( uint8_t* p_buffer, uint8_t length, 
+ * @fn     void cc2500_tx_packet( uint8_t* p_buffer, uint8_t length,
  *                                                        uint8_t destination )
- * @brief  Send packet through radio. Takes care of adding length and 
+ * @brief  Send packet through radio. Takes care of adding length and
  *         destination to packet.
  * ****************************************************************************/
 void cc2500_tx_packet( uint8_t* p_buffer, uint8_t length, uint8_t destination )
 {
   // Add one to packet length account for address byte
   p_tx_buffer[LENGTH_FIELD] = length + 1;
-  
+
   // Insert destination address to buffer
   p_tx_buffer[ADDRESS_FIELD] = destination;
-  
+
   // Copy message buffer into tx buffer. Add one to account for length byte
   memcpy( &p_tx_buffer[DATA_FIELD], p_buffer, length );
-  
+
   // Add DATA_FIELD to account for packet length and address bytes
   cc2500_tx( p_tx_buffer, (length + DATA_FIELD) );
 }
@@ -133,7 +133,7 @@ void cc2500_set_channel( uint8_t channel )
  * @brief  Set device transmit power
  * ****************************************************************************/
 void cc2500_set_power( uint8_t power )
-{  
+{
   // Set TX power
   cc_write_burst_reg(TI_CCxxx0_PATABLE, &power, 1 );
 }
@@ -143,7 +143,7 @@ void cc2500_set_power( uint8_t power )
  * @brief  Enable address checking with 0x00 as a broadcast address
  * ****************************************************************************/
 void cc2500_enable_addressing()
-{  
+{
   uint8_t tmp_reg;
 
   tmp_reg = ( cc_read_reg( TI_CCxxx0_PKTCTRL1  ) & ~0x03 ) | 0x02;
@@ -156,12 +156,25 @@ void cc2500_enable_addressing()
  * @brief  Disable address checking
  * ****************************************************************************/
 void cc2500_disable_addressing()
-{  
+{
   uint8_t tmp_reg;
 
   tmp_reg = ( cc_read_reg( TI_CCxxx0_PKTCTRL1  ) & ~0x03 );
 
   cc_write_reg( TI_CCxxx0_PKTCTRL1, tmp_reg );
+}
+
+/*******************************************************************************
+ * @fn     cc2500_sleep( );
+ * @brief  Set device to low power sleep mode
+ * ****************************************************************************/
+void cc2500_sleep( )
+{
+  // Set device to idle
+  cc_strobe(TI_CCxxx0_SIDLE);
+
+  // Set device to power-down (sleep) mode
+  cc_strobe(TI_CCxxx0_SPWD);
 }
 
 /*******************************************************************************
@@ -183,7 +196,7 @@ uint8_t receive_packet( uint8_t* p_buffer, uint8_t* length )
 {
   uint8_t status[2];
   uint8_t packet_length;
-  
+
   // Make sure there are bytes to be read in the FIFO buffer
   if ( ( cc_read_status( TI_CCxxx0_RXBYTES ) & TI_CCxxx0_NUM_RXBYTES ) )
   {
@@ -195,33 +208,33 @@ uint8_t receive_packet( uint8_t* p_buffer, uint8_t* length )
     {
       // Read the rest of the packet
       cc_read_burst_reg( TI_CCxxx0_RXFIFO, p_buffer, packet_length );
-      
+
       // Return packet size in length variable
       *length = packet_length;
-      
-      // Read two byte status 
+
+      // Read two byte status
       cc_read_burst_reg( TI_CCxxx0_RXFIFO, status, 2 );
-      
-      // Append status bytes to buffer 
+
+      // Append status bytes to buffer
       memcpy( &p_buffer[packet_length], status, 2 );
-      
+
       // Return 1 when CRC matches, 0 otherwise
       return ( status[TI_CCxxx0_LQI_RX] & TI_CCxxx0_CRC_OK );
-    }    
+    }
     else
     {
       // If the packet is larger than the buffer, flush the RX FIFO
       *length = packet_length;
-      
+
       // Flush RX FIFO
       cc_strobe(TI_CCxxx0_SFRX);      // Flush RXFIFO
-      
+
       return 0;
     }
-    
+
   }
- 
-  return 0;  
+
+  return 0;
 }
 
 // Product = CC2500
@@ -299,8 +312,8 @@ void writeRFSettings(void)
 #pragma vector=PORT2_VECTOR
 __interrupt void port2_isr(void) // CHANGE
 {
-  uint8_t length = CC2500_BUFFER_LENGTH; 
-  
+  uint8_t length = CC2500_BUFFER_LENGTH;
+
   // Check to see if this interrupt was caused by the GDO0 pin from the CC2500
   if ( GDO0_PxIFG & GDO0_PIN )
   {
@@ -312,22 +325,21 @@ __interrupt void port2_isr(void) // CHANGE
           // If rx_callback returns nonzero, wakeup the processor
           __bic_SR_register_on_exit(LPM1_bits);
         }
-        
+
         // Clear the buffer
         memset( p_rx_buffer, 0x00, sizeof(p_rx_buffer) );
-        
       }
       else
       {
         // A failed receive can occur due to bad CRC or (if address checking is
         // enabled) an address mismatch
-        
+
         //uart_write("CRC NOK\r\n", 9);
       }
-           
+
   }
   GDO0_PxIFG &= ~GDO0_PIN;  // Clear interrupt flag
-  
+
   // Only needed if radio is configured to return to IDLE after transmission
   // Check register MCSM1.TXOFF_MODE
   // cc_strobe(TI_CCxxx0_SRX); // enter receive mode again

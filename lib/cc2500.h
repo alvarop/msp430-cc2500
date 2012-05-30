@@ -21,6 +21,8 @@ void cc2500_set_address( uint8_t );
 void cc2500_set_channel( uint8_t );
 void cc2500_set_power( uint8_t );
 
+void cc2500_sleep( );
+
 void cc2500_enable_addressing();
 void cc2500_disable_addressing();
 

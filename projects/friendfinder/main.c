@@ -69,8 +69,9 @@ void main(void) {
     // Compute delay from incoming rssi
     int16_t delay = (rssi_rx-rssi_threshold) * 5;
 
-
+    // Wait before turning off the buzzer
     delay_ms(delay);
+
     buzzer_off();
 
     // Reset to no delay
@@ -83,10 +84,10 @@ void main(void) {
 // This function is called to process the received packet
 uint8_t rx_callback( uint8_t* buffer, uint8_t length )
 {
-
-
+  // If the incoming RSSI is above the threshold, turn on the buffer
   if(rssi_to_dbm(buffer[length]) > rssi_threshold)
   {
+    // Convert received RSSI to dbm and store it
     rssi_rx = rssi_to_dbm(buffer[length]);
     buzzer_on();
     return 1; //wake up
@@ -115,7 +116,6 @@ __interrupt void TA1_ISR (void)
 
   if(counter == 60)
   {
-
     cc2500_tx_packet((uint8_t*)"go!", 3, 0x00);
     // Toggle LED
     P1OUT = P1OUT ^ BIT0;
