@@ -25,6 +25,9 @@
 #elif defined( __MSP430G2553__)
 #include "device/ti/msp430/g2553.h"
 
+#elif defined( __MSP430F2274__)
+#include "device/ti/msp430/f2274.h"
+
 #else
 #error Device not supported. Create your <device>.h file under lib/device/ and add it here!
 #endif
