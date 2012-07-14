@@ -8,8 +8,8 @@
 uint8_t rx_callback( uint8_t*, uint8_t );
 void delay_ms(uint32_t);
 
-int16_t rssi_threshold = -135;
-int16_t rssi_rx = -135;
+int16_t rssi_threshold = -60;
+int16_t rssi_rx = -60;
 
 inline void buzzer_on() {
   P1OUT |= BIT3;
@@ -106,8 +106,8 @@ void delay_ms(uint32_t delay_ms) {
 }
 
 // Timer A isr
-#pragma vector=TIMER0_A1_VECTOR
-__interrupt void TA1_ISR (void)
+#pragma vector=TIMERA0_VECTOR
+__interrupt void TA0_ISR (void)
 {
   static uint8_t counter;
 
@@ -125,6 +125,6 @@ __interrupt void TA1_ISR (void)
 
 
   // Clear interrupt flag
-  TA0IV &= ~TA0IV_TAIFG;
+  TA0IV &= ~TAIV_TAIFG;
 
 }
