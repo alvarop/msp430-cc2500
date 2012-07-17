@@ -80,4 +80,16 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>cc2500.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/lib/cc2500/cc2500.c</locationURI>
+		</link>
+		<link>
+			<name>usi.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/lib/spi/ti/usi.c</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
