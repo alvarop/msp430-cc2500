@@ -4,7 +4,10 @@
 
 #include <stdint.h>
 #include "device.h"
+#include "spi.h"
 #include "cc2500.h"
+
+uint8_t cc2500_rx_callback( uint8_t*, uint8_t );
 
 void main(void) {
 
@@ -16,6 +19,12 @@ void main(void) {
 
 	// Wait for changes to take effect
 	__delay_cycles(4000);
+
+	// Setup CC2500 radio and register callback to process incoming packets
+	setup_cc2500(cc2500_rx_callback);
+
+  // Turn radio off to save power
+	void cc2500_sleep();
 
   // Set P1.0 as an output
 	P1OUT &= ~(BIT0);
@@ -48,19 +57,43 @@ void main(void) {
       // Turn on the LED
       P1OUT |= BIT0;
 
-      // Send radio message here
+      __delay_cycles(100000);
+          __delay_cycles(100000);
+          __delay_cycles(100000);
+          __delay_cycles(100000);
+          __delay_cycles(100000);
+
+      // Send 'doorbell on' packet
+      cc2500_tx_packet((uint8_t *)"doorbell on", sizeof("doorbell on"), 0x00);
 
     } else {
       // Turn off the led
       P1OUT &= ~BIT0;
 
+      // Send 'doorbell off' packet
+      cc2500_tx_packet((uint8_t *)"doorbell off", sizeof("doorbell off"), 0x00);
+
+      // Turn off the radio to save power
+      void cc2500_sleep( );
+
       // Enter LPM1, sleeeep
-      __bis_SR_register(LPM1_bits);
+      __bis_SR_register(LPM3_bits);
     }
 
   }
 
 }
+
+//
+// Right now we're only sending data, so we don't have to do anything with
+// incoming messages
+//
+uint8_t cc2500_rx_callback( uint8_t* buffer, uint8_t length )
+{
+
+  return 0;
+}
+
 
 #pragma vector=PORT1_VECTOR
 __interrupt void port1_isr(void)
@@ -68,7 +101,7 @@ __interrupt void port1_isr(void)
   if( P1IFG & BIT2 )
   {
     // Wakeup!
-    __bic_SR_register_on_exit(LPM1_bits);
+    __bic_SR_register_on_exit(LPM3_bits);
 
     P1IFG &= ~BIT2; // Clear interrupt flag
   }
