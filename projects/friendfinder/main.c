@@ -12,11 +12,11 @@ int16_t rssi_threshold = -60;
 int16_t rssi_rx = -60;
 
 inline void buzzer_on() {
-  P1OUT |= BIT3;
+  LED_PxOUT |= LED2;
 }
 
 inline void buzzer_off() {
-  P1OUT &= ~BIT3;
+  LED_PxOUT &= ~LED2;
 }
 
 #define RSSI_OFFSET (72)
@@ -55,8 +55,8 @@ void main(void) {
   // Wait a bit for radio
   delay_ms(10);
 
-  P1OUT &= ~(BIT0+BIT3);
-  P1DIR |= (BIT0+BIT3);
+  LED_PxOUT &= ~(LED1+LED2);
+  LED_PxDIR |= (LED1+LED2);
 
   // SMCLK/8, up mode, enable interrupt,
   TA0CTL = TASSEL_2 + ID_3+ MC_1 + TAIE + TACLR;
@@ -118,7 +118,7 @@ __interrupt void TA0_ISR (void)
   {
     cc2500_tx_packet((uint8_t*)"go!", 3, 0x00);
     // Toggle LED
-    P1OUT = P1OUT ^ BIT0;
+    LED_PxOUT = LED_PxOUT ^ LED1;
 
     counter = 0;
   }
