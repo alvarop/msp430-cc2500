@@ -31,17 +31,17 @@ void spi_setup(void)
   UCB0CTL1 |= UCSSEL_2;                     // SMCLK
   UCB0BR0 = 0x10;                           // UCLK/2
   UCB0BR1 = 0;
-
-#ifndef _F2274_H
   SPI_USCIB0_PxSEL  |= SPI_USCIB0_SIMO
                           | SPI_USCIB0_SOMI
                           | SPI_USCIB0_UCLK;
-
+#ifndef __MSP430F2274__
   SPI_USCIB0_PxSEL2 |= SPI_USCIB0_SIMO
                           | SPI_USCIB0_SOMI
                           | SPI_USCIB0_UCLK;
+#else
+  // SPI option select
+  SPI_USCIB0_PxDIR |= SPI_USCIB0_SIMO | SPI_USCIB0_UCLK;
 #endif
-
                                             // SPI option select
   //SPI_USCIB0_PxDIR |= SPI_USCIB0_SIMO | SPI_USCIB0_UCLK;
                                             // SPI TXD out direction
