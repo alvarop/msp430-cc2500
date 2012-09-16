@@ -31,13 +31,13 @@
 #define CSn_PIN           BIT0
 
 // SPI Pin Definitions
-#define SPI_USCIB0_PxSEL  P1SEL
-#define SPI_USCIB0_PxSEL2 P1SEL2
-#define SPI_USCIB0_PxDIR  P1DIR
-#define SPI_USCIB0_PxIN   P1IN
-#define SPI_USCIB0_SIMO   BIT7
-#define SPI_USCIB0_SOMI   BIT6
-#define SPI_USCIB0_UCLK   BIT5
+#define SPI_USCIB0_PxSEL  P3SEL
+#define SPI_USCIB0_PxSEL2 P3SEL2
+#define SPI_USCIB0_PxDIR  P3DIR
+#define SPI_USCIB0_PxIN   P3IN
+#define SPI_USCIB0_SIMO   BIT1
+#define SPI_USCIB0_SOMI   BIT2
+#define SPI_USCIB0_UCLK   BIT3
 
 // Make sure we use the correct UART interface
 #define UART_INTERFACE_USCIA0
