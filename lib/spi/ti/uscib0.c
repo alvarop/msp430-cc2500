@@ -40,7 +40,7 @@ void spi_setup(void)
                           | SPI_USCIB0_UCLK;
 #else
   // SPI option select
-  SPI_USCIB0_PxDIR |= SPI_USCIB0_SIMO | SPI_USCIB0_UCLK;
+  SPI_USCIB0_PxDIR |= (SPI_USCIB0_SIMO | SPI_USCIB0_UCLK);
 #endif
                                             // SPI option select
   //SPI_USCIB0_PxDIR |= SPI_USCIB0_SIMO | SPI_USCIB0_UCLK;

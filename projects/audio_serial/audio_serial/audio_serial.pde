@@ -22,7 +22,7 @@ void setup()
   println(Serial.list());
   
   // Need to change this as needed
-  myPort = new Serial(this, Serial.list()[1], 115200);
+  myPort = new Serial(this, Serial.list()[0], 115200);
  
   // specify 512 for the length of the sample buffers
   // the default buffer size is 1024
@@ -115,9 +115,11 @@ void draw()
 
       
   // Write RGB values to serial port.
+  myPort.write(0x7E);
   myPort.write(low); // Red is for the low channel
   myPort.write(mid); // Green is for the middle
   myPort.write(high); // Blue is for the higher stuff
+  myPort.write(0x7F);
  
   // Print values for debugging 
   //print(low);

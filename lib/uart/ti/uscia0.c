@@ -25,9 +25,9 @@ void setup_uart( void )
   P1SEL   |= BIT1 + BIT2;              // Select UART/SPI function
   P1SEL2  |= BIT1 + BIT2;              // Select UART/SPI function
 
-  // 
+  //
   // Configure Serial Port
-  // 
+  //
   UCA0CTL1 |= UCSWRST;                // **Put state machine in reset**
   UCA0CTL1 |= UCSSEL_2;               // CLK = SMCLK
 
@@ -49,7 +49,7 @@ void setup_uart( void )
  * @brief  transmit single character
  * ****************************************************************************/
 void uart_put_char( uint8_t character )
-{ 
+{
   while (!(IFG2&UCA0TXIFG));  // USCI_A0 TX buffer ready?
   UCA0TXBUF = character;
 }
@@ -72,7 +72,7 @@ void setup_uart_callback( uint8_t (*callback)(uint8_t) )
 void uart_write( uint8_t* buffer, uint16_t length )
 {
   uint16_t buffer_index;
-  
+
   for( buffer_index = 0; buffer_index < length; buffer_index++ )
   {
 
@@ -89,13 +89,13 @@ void uart_write( uint8_t* buffer, uint16_t length )
 void uart_write_escaped( uint8_t* buffer, uint16_t length )
 {
   uint16_t buffer_index;
-    
+
   while (!(IFG2&UCA0TXIFG));  // USCI_A0 TX buffer ready?
-  UCA0TXBUF = SYNC_BYTE;
+  UCA0TXBUF = START_BYTE;
 
   for( buffer_index = 0; buffer_index < length; buffer_index++ )
   {
-    if( (buffer[buffer_index] == SYNC_BYTE) | (buffer[buffer_index] == ESCAPE_BYTE) )
+    if( (buffer[buffer_index] >= ESCAPE_BYTE) && (buffer[buffer_index] <= END_BYTE) )
     {
       while (!(IFG2&UCA0TXIFG));  // USCI_A0 TX buffer ready?
       UCA0TXBUF = ESCAPE_BYTE;
@@ -112,7 +112,7 @@ void uart_write_escaped( uint8_t* buffer, uint16_t length )
   }
 
   while (!(IFG2&UCA0TXIFG));  // USCI_A0 TX buffer ready?
-  UCA0TXBUF = SYNC_BYTE;
+  UCA0TXBUF = END_BYTE;
 
 }
 
@@ -123,7 +123,7 @@ void uart_write_escaped( uint8_t* buffer, uint16_t length )
 static uint8_t dummy_callback( uint8_t rx_char )
 {
   __no_operation();
-  
+
   return 0;
 }
 
@@ -134,10 +134,10 @@ static uint8_t dummy_callback( uint8_t rx_char )
  * ****************************************************************************/
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void uart_rx_isr(void) // CHANGE
-{  
+{
   // Process incoming byte from USART
   if( IFG2 & UCA0RXIFG )
-  { 
+  {
     // Call rx callback function
     if( uart_rx_callback( UCA0RXBUF ) )
     {
@@ -148,7 +148,7 @@ __interrupt void uart_rx_isr(void) // CHANGE
   // Process incoming byte from SPI
   else if ( IFG2 & UCB0RXIFG )
   {
-        
+
   }
 }
 
@@ -164,7 +164,7 @@ __interrupt void uart_tx_isr(void) // CHANGE
   {
       // Check if this is a burst transfer, otherwise, pull CSn high
       //CSn_PxOUT &= ~CSn_PIN;
-      
+
       // Disable TX interrupts on SPI
       //IE2 &= ~UCB0TXIE;
   }

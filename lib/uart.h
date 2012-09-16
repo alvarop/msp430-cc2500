@@ -9,8 +9,9 @@
 
 #include <stdint.h>
 
-#define SYNC_BYTE 0x7E
 #define ESCAPE_BYTE 0x7D
+#define START_BYTE 0x7E
+#define END_BYTE 0x7F
 
 void setup_uart( void );
 
