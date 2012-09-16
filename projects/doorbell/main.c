@@ -11,6 +11,12 @@ uint8_t cc2500_rx_callback( uint8_t*, uint8_t );
 
 void main(void) {
 
+  uint8_t ringing = 0;
+  uint8_t tx_buffer[8];
+
+  // First byte is for packet size
+  packet_header_t* packet = (packet_header_t*)&tx_buffer[1];
+
 	WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 
 	// Setup oscillator for 16MHz operation
@@ -42,6 +48,15 @@ void main(void) {
 	P1IFG &= ~BIT2; // Clear interrupt flag
 	P1IE |= BIT2;   // Enable interrupt
 
+	//
+	// Initialize packet
+	//
+	tx_buffer[0] = sizeof(packet_header_t);
+	packet->destination = 0x00;
+	packet->source = DEVICE_ADDRESS;
+	packet->type = IO_CHANGE;
+	packet->flags = 0;
+
 	// enable interrupts
   __bis_SR_register(GIE);
 
@@ -56,23 +71,21 @@ void main(void) {
     {
       // Turn on the LED
       P1OUT |= BIT0;
-
-      __delay_cycles(100000);
-          __delay_cycles(100000);
-          __delay_cycles(100000);
-          __delay_cycles(100000);
-          __delay_cycles(100000);
-
-      // Send 'doorbell on' packet
-      cc2500_tx_packet((uint8_t *)"doorbell on", sizeof("doorbell on"), 0x00);
+      if(!ringing) {
+        // Send 'doorbell on' packet
+        packet->flags = 1;
+        cc2500_tx(tx_buffer, sizeof(packet_header_t)+1);
+        ringing = 1;
+      }
 
     } else {
       // Turn off the led
       P1OUT &= ~BIT0;
 
       // Send 'doorbell off' packet
-      cc2500_tx_packet((uint8_t *)"doorbell off", sizeof("doorbell off"), 0x00);
-
+      packet->flags = 0;
+      cc2500_tx(tx_buffer, sizeof(packet_header_t)+1);
+      ringing = 0;
       // Turn off the radio to save power
       void cc2500_sleep( );
 
