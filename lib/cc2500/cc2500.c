@@ -72,15 +72,21 @@ void setup_cc2500( uint8_t (*callback)(uint8_t*, uint8_t) )
  * ****************************************************************************/
 void cc2500_tx( uint8_t* p_buffer, uint8_t length )
 {
+  volatile int i;
+
   GDO0_PxIE &= ~GDO0_PIN;          // Disable interrupt
 
   cc_write_burst_reg(TI_CCxxx0_TXFIFO, p_buffer, length); // Write TX data
   cc_strobe(TI_CCxxx0_STX);           // Change state to TX, initiating
                                             // data transfer
 
-  while (!(GDO0_PxIN&GDO0_PIN));
+// sometimes the chip hangs on while(!(GDO0_PxIN&GDO0_PIN)); line, see http://alvarop.com/2011/12/cc2500-project-part-1/#comment-467755523
+  for (i=0;i<5000 && !(GDO0_PxIN&GDO0_PIN);i++); // Wait GDO0 to go hi or timeout -> sync TX'ed
+  for (i=0;i<5000 && (GDO0_PxIN&GDO0_PIN);i++);  // Wait GDO0 to clear or timeout -> end of pkt
+//no used anymore
+//  while (!(GDO0_PxIN&GDO0_PIN));
                                             // Wait GDO0 to go hi -> sync TX'ed
-  while (GDO0_PxIN&GDO0_PIN);
+//  while (GDO0_PxIN&GDO0_PIN);
                                             // Wait GDO0 to clear -> end of pkt
   GDO0_PxIFG &= ~GDO0_PIN;      // After pkt TX, this flag is set.
                                             // Has to be cleared before existing
