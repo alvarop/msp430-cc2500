@@ -46,8 +46,9 @@ void main(void)
    __bis_SR_register( LPM1_bits + GIE );   // Enable interrupts and sleep
 
    // Forward over cc2500
-   if(packet_size) {
-     cc2500_tx_packet(serial_buffer, packet_size, 0x00);
+   if(packet_size > 1) {
+	 // First byte in buffer is address, so we start sending from the second one
+     cc2500_tx_packet(&serial_buffer[1], packet_size - 1, serial_buffer[0]);
      LED_PxOUT &= ~(LED1);
    }
    packet_size = 0;
