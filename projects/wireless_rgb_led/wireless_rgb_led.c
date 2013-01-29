@@ -26,6 +26,10 @@ int main(void)
   // Initialize cc2500 and register callback function to process incoming data
   setup_cc2500(rx_callback);
 
+  cc2500_set_address(DEVICE_ADDRESS);
+
+  cc2500_enable_addressing();
+
   LED_PxOUT &= ~(LED1 + LED2); //Outputs
   LED_PxDIR = LED1 + LED2; //Outputs
 
