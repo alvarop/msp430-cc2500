@@ -20,38 +20,38 @@ uint8_t uart_rx_callback( uint8_t );
 void main(void)
 {
   /* Init watchdog timer to off */
-   WDTCTL = WDTPW|WDTHOLD;
+  WDTCTL = WDTPW|WDTHOLD;
 
-   // Setup oscillator for 16MHz operation
-   BCSCTL1 = CALBC1_16MHZ;
-   DCOCTL = CALDCO_16MHZ;
+  // Setup oscillator for 16MHz operation
+  BCSCTL1 = CALBC1_16MHZ;
+  DCOCTL = CALDCO_16MHZ;
 
-   // Setup LED outputs
-   LED_PxOUT &= ~(LED1 | LED2);
-   LED_PxDIR = LED1 | LED2; //Outputs
+  // Setup LED outputs
+  LED_PxOUT &= ~(LED1 | LED2);
+  LED_PxDIR = LED1 | LED2; //Outputs
 
-   // Wait for changes to take effect
-   __delay_cycles(4000);
+  // Wait for changes to take effect
+  __delay_cycles(4000);
 
-   // Make sure a function processes bytes received through UART
-   setup_uart_callback( uart_rx_callback );
+  // Make sure a function processes bytes received through UART
+  setup_uart_callback( uart_rx_callback );
 
-   // Setup CC2500 radio and register callback to process incoming packets
-   setup_cc2500(cc2500_rx_callback);
+  // Setup CC2500 radio and register callback to process incoming packets
+  setup_cc2500(cc2500_rx_callback);
 
-   setup_uart();
+  setup_uart();
 
-   for(;;)
-   {
-     __bis_SR_register( LPM1_bits + GIE );   // Enable interrupts and sleep
+  for(;;)
+  {
+   __bis_SR_register( LPM1_bits + GIE );   // Enable interrupts and sleep
 
-     // Forward over cc2500
-     if(packet_size) {
-       cc2500_tx_packet(serial_buffer, packet_size, 0x00);
-       LED_PxOUT &= ~(LED1);
-     }
-     packet_size = 0;
+   // Forward over cc2500
+   if(packet_size) {
+     cc2500_tx_packet(serial_buffer, packet_size, 0x00);
+     LED_PxOUT &= ~(LED1);
    }
+   packet_size = 0;
+  }
 
 }
 
