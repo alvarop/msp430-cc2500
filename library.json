@@ -1,0 +1,12 @@
+{
+  "name": "MSP430-CC2500",
+  "keywords": "rf, radio, spi",
+  "description": "The CC2500 is a low-cost 2.4 GHz RF transceiver designed for very low-power wireless applications",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/alvarop/msp430-cc2500.git"
+  },
+  "include": "lib",
+  "examples": "projects/*/*.c"
+}
