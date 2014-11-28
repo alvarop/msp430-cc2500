@@ -1,6 +1,6 @@
 {
   "name": "CC2500",
-  "keywords": "rf, radio, spi",
+  "keywords": "rf, radio, wireless, spi",
   "description": "The CC2500 is a low-cost 2.4 GHz RF transceiver designed for very low-power wireless applications",
   "authors":
   {
